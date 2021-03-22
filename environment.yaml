@@ -1,0 +1,10 @@
+name: ngseq_quality_visualisation
+
+dependencies:
+  - python=3.9
+  - numpy
+  - pandas
+  - plotly
+  - plotly-dash
+  - pip:
+    - git+https://github.com/blaze/dask.git#egg=dask[complete]
