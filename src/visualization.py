@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 import pandas as pd
 import plotly.graph_objects as go
-import IOUtil as io
+import io_util as io
 
 fig = px.line()
 data = io.readFastQCDataFile()
@@ -16,21 +16,7 @@ boxplot_ids = [1]
 tileplot_ids = [2]
 graph_ids = [3, 4, 5, 6, 7, 9]
 
-available_files = [{'label': 'Basic Statistics', 'value': 0},
-                   {'label': 'Per base sequence quality', 'value': 1, 'disabled': True},
-                   {'label': 'Per tile sequence quality',
-                    'value': 2, 'disabled': True},
-                   {'label': 'Per sequence quality scores', 'value': 3},
-                   {'label': 'Per base sequence content',
-                    'value': 4},
-                   {'label': 'Per sequence GC content',
-                    'value': 5},
-                   {'label': 'Per base N content', 'value': 6},
-                   {'label': 'Sequence Length Distribution',
-                    'value': 7},
-                   {'label': 'Sequence Duplication Levels',
-                    'value': 8, 'disabled': True},
-                   {'label': 'Adapter Content', 'value': 9}]
+available_files = get_available_files()
 
 plotting_options = [{'label': 'Basic Statistics', 'value': 0},
                     {'label': 'Per base sequence quality', 'value': 1, 'disabled': True},
@@ -63,7 +49,7 @@ dropdown2 = dcc.Dropdown(id='plot_selection_dropdown',
                                            clearable=False)
 
 
-def runApp():
+def run_app():
     app.run_server(debug=True)
 
 
@@ -89,7 +75,7 @@ app.layout = html.Div(children=[
     Output(component_id='the_graph', component_property='figure'),
     [Input(component_id='plot_selection_dropdown', component_property='value')]
 )
-def updateGraph(plot_selection_dropdown, string):
+def update_graph(plot_selection_dropdown):
     global fig
     df = data.copy()
     t = df['190925_19-08244_634-17_S189_L000_R1_001_fastqc'][plot_selection_dropdown]
@@ -119,9 +105,26 @@ def updateGraph(plot_selection_dropdown, string):
             print(t)
 
     # fig.update_traces(textinfo='percent+label')
-    fig.update_layout(title={'text': string, 'font': {'size': 28}, 'x': 0.5, 'xanchor': 'center'})
+    #fig.update_layout(title={'text': string, 'font': {'size': 28}, 'x': 0.5, 'xanchor': 'center'})
     return fig
 
+
+def get_available_files():
+    return [{'label': 'Basic Statistics', 'value': 0},
+     {'label': 'Per base sequence quality', 'value': 1, 'disabled': True},
+     {'label': 'Per tile sequence quality',
+      'value': 2, 'disabled': True},
+     {'label': 'Per sequence quality scores', 'value': 3},
+     {'label': 'Per base sequence content',
+      'value': 4},
+     {'label': 'Per sequence GC content',
+      'value': 5},
+     {'label': 'Per base N content', 'value': 6},
+     {'label': 'Sequence Length Distribution',
+      'value': 7},
+     {'label': 'Sequence Duplication Levels',
+      'value': 8, 'disabled': True},
+     {'label': 'Adapter Content', 'value': 9}]
 
 """
 def get_options(list_stocks):

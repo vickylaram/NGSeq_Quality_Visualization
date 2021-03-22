@@ -1,5 +1,5 @@
-import Visualization as v
-import IOUtil as io
+import visualization as v
+import io_util as io
 
 # This is a sample Python script.
 
@@ -13,4 +13,4 @@ if __name__ == '__main__':
     #dictOfDfs = io.readFastQCDataFile()
     #print(dictOfDfs.keys())
     #print(dictOfDfs['190925_19-08244_634-17_S189_L000_R1_001_fastqc'])
-    v.runApp()
+    v.run_app()
