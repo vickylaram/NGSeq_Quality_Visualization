@@ -43,14 +43,16 @@ dropdown1 = dcc.Dropdown(id='file_selection1_dropdown',
                                            value=0,
                                            optionHeight=60,
                                            multi=False,
-                                           clearable=False)
+                                           clearable=False,
+                                           searchable=True)
 
 dropdown2 = dcc.Dropdown(id='file_selection2_dropdown',
                                            options=available_files,
                                            value=0,
                                            optionHeight=60,
                                            multi=False,
-                                           clearable=False)
+                                           clearable=False,
+                                           searchable=True)
 
 dropdown3 = dcc.Dropdown(id='plot_selection_dropdown',
                                            options=plotting_options,
@@ -63,13 +65,7 @@ div = html.Div(className='four columns div-user-controls',
 
 
 def run_app():
-
-
-
-    #__data = d
     __get_available_files(__data)
-    #print(type(__data))
-    #print(__data.keys())
     app.run_server(debug=True)
 
 
@@ -101,7 +97,7 @@ def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_select
     global fig
 
     file1 = __data[file_selection1_dropdown][plot_selection_dropdown]
-    file2 = __data[file_selection2_dropdown][plot_selection_dropdown]
+    #file2 = __data[file_selection2_dropdown][plot_selection_dropdown]
 
     if plot_selection_dropdown in table_ids:
         fig = go.Figure(data=[go.Table(
@@ -128,7 +124,7 @@ def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_select
             print(file1)
 
     #fig.update_traces(textinfo='percent+label')
-    #fig.update_layout(title={'text': string, 'font': {'size': 28}, 'x': 0.5, 'xanchor': 'center'})
+    fig.update_layout(title={'text': plotting_options[plot_selection_dropdown]['label'], 'font': {'size': 28}, 'x': 0.5, 'xanchor': 'center'})
     return fig
 
 
