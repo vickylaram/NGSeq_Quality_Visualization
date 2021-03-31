@@ -1,6 +1,9 @@
 /trainings_data
 /FastQC
 /FastQC_Output
+  
+
+/FastQC_Output_old
 
 /src/.DS_Store
 .DS_Store
@@ -10,6 +13,9 @@
 work/
 
 .nextflow/
+.nextflow.log.*
+
+script_old.nf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
