@@ -5,11 +5,6 @@ params.output = "$PWD/FastQC_Output"
 
 files = Channel.fromPath(params.input + "/*.fastq.gz")
 
-/*
-println "Input: $params.input"
-println "Output: $params.output"
-
-*/
 
 process runFastqc {
 /*
@@ -40,7 +35,8 @@ process runFastqc {
     """
     if [ -d "$params.input" ]; then
     [[ -d "$params.output" ]] || mkdir "$params.output"
-    echo "$file"
+    $PWD/FastQC/fastqc "$file" -o $params.output
+    echo "Processing $file ...."
     else
     echo "Warning: '$params.input' NOT found."
     fi
