@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 import io_util as io
 
 fig = px.line()
-data = io.readFastQCDataFile()
+data = None
 app = dash.Dash()
 
 table_ids = [0]
@@ -16,7 +16,7 @@ boxplot_ids = [1]
 tileplot_ids = [2]
 graph_ids = [3, 4, 5, 6, 7, 9]
 
-available_files = get_available_files()
+available_files = []
 
 plotting_options = [{'label': 'Basic Statistics', 'value': 0},
                     {'label': 'Per base sequence quality', 'value': 1, 'disabled': True},
@@ -34,22 +34,32 @@ plotting_options = [{'label': 'Basic Statistics', 'value': 0},
                      'value': 8, 'disabled': True},
                     {'label': 'Adapter Content', 'value': 9}]
 
-dropdown1 = dcc.Dropdown(id='file_selection_dropdown',
+dropdown1 = dcc.Dropdown(id='file_selection1_dropdown',
                                            options=available_files,
                                            value=0,
                                            optionHeight=35,
                                            multi=False,
                                            clearable=False)
 
-dropdown2 = dcc.Dropdown(id='plot_selection_dropdown',
-                                           options=plotting_options,
+dropdown2 = dcc.Dropdown(id='file_selection2_dropdown',
+                                           options=available_files,
                                            value=0,
                                            optionHeight=35,
                                            multi=False,
                                            clearable=False)
 
+dropdown3 = dcc.Dropdown(id='plot_selection_dropdown',
+                                           options=plotting_options,
+                                           value=0,
+                                           optionHeight=35,
+                                           multi=False,
+                                           clearable=False)
+div = html.Div(className='four columns div-user-controls',
+                          children=[])
 
-def run_app():
+
+def run_app(dict_of_dfs):
+    data = dict_of_dfs
     app.run_server(debug=True)
 
 
@@ -62,7 +72,7 @@ app.layout = html.Div(children=[
     html.Div(className='row',  # Define the row element
              children=[
                  html.Div(className='four columns div-user-controls',
-                          children=[dropdown1, dropdown2]),  # Define the left element
+                          children=[dropdown1, div, dropdown2, div, dropdown3]),  # Define the left element
     html.Div(className='eight columns div-for-charts bg-grey',
              children=[
                  html.Div([dcc.Graph(id='the_graph', figure=fig)])
@@ -104,12 +114,16 @@ def update_graph(plot_selection_dropdown):
         if plot_selection_dropdown == 7:
             print(t)
 
-    # fig.update_traces(textinfo='percent+label')
+    #fig.update_traces(textinfo='percent+label')
     #fig.update_layout(title={'text': string, 'font': {'size': 28}, 'x': 0.5, 'xanchor': 'center'})
     return fig
 
 
-def get_available_files():
+def __get_available_files():
+
+    for entry in data:
+        print(entry)
+
     return [{'label': 'Basic Statistics', 'value': 0},
      {'label': 'Per base sequence quality', 'value': 1, 'disabled': True},
      {'label': 'Per tile sequence quality',
@@ -126,11 +140,3 @@ def get_available_files():
       'value': 8, 'disabled': True},
      {'label': 'Adapter Content', 'value': 9}]
 
-"""
-def get_options(list_stocks):
-    dict_list = []
-    for i in list_stocks:
-        dict_list.append({'label': i, 'value': i})
-
-    return dict_list
-"""

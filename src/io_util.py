@@ -8,26 +8,26 @@ from pprint import pprint
 from fastqcparser import FastQCParser
 
 data_path = '/Users/vicky/Documents/RKI/trainings_data'
-fastqc_output_path = '/Users/vicky/Documents/RKI/FastQC_Output/'
+
 fastqc_data_file = '/fastqc_data.txt'
 
 __dictOfDfs = {}
 
 
-def __extract_files():
+def __extract_files(fastqc_output_path):
     os.chdir(fastqc_output_path)
     for file in glob.glob("*.zip"):
         with zipfile.ZipFile(file, 'r') as zip_ref:
             zip_ref.extractall()
 
 
-def __get_extracted_subfolders():
+def __get_extracted_subfolders(fastqc_output_path):
     return [d for d in os.listdir(fastqc_output_path) if os.path.isdir(os.path.join(fastqc_output_path, d))]
 
 
-def read_fastqc_data():
-    __extract_files()
-    subfolders_list = __get_extracted_subfolders()
+def read_fastqc_data(fastqc_output_path):
+    __extract_files(fastqc_output_path)
+    subfolders_list = __get_extracted_subfolders(fastqc_output_path)
     for subfolder in subfolders_list:
         path = fastqc_output_path + subfolder + fastqc_data_file
         raw_input_data = FastQCParser(path)

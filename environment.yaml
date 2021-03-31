@@ -5,6 +5,7 @@ dependencies:
   - numpy
   - pandas
   - plotly
-  - plotly-dash
+  - dash
+  - pip
   - pip:
     - git+https://github.com/blaze/dask.git#egg=dask[complete]
