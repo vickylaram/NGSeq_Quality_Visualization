@@ -7,8 +7,12 @@ import pandas as pd
 import plotly.graph_objects as go
 import io_util as io
 
+import io_util as io
+
+
 fig = px.line()
-data = None
+fastqc_output_path = '/Users/vicky/Documents/NGSeq_Quality_Visualization/FastQC_Output/'
+__data = __data = io.read_fastqc_data(fastqc_output_path)
 app = dash.Dash()
 
 table_ids = [0]
@@ -37,14 +41,14 @@ plotting_options = [{'label': 'Basic Statistics', 'value': 0},
 dropdown1 = dcc.Dropdown(id='file_selection1_dropdown',
                                            options=available_files,
                                            value=0,
-                                           optionHeight=35,
+                                           optionHeight=60,
                                            multi=False,
                                            clearable=False)
 
 dropdown2 = dcc.Dropdown(id='file_selection2_dropdown',
                                            options=available_files,
                                            value=0,
-                                           optionHeight=35,
+                                           optionHeight=60,
                                            multi=False,
                                            clearable=False)
 
@@ -58,8 +62,14 @@ div = html.Div(className='four columns div-user-controls',
                           children=[])
 
 
-def run_app(dict_of_dfs):
-    data = dict_of_dfs
+def run_app():
+
+
+
+    #__data = d
+    __get_available_files(__data)
+    #print(type(__data))
+    #print(__data.keys())
     app.run_server(debug=True)
 
 
@@ -83,60 +93,46 @@ app.layout = html.Div(children=[
 
 @app.callback(
     Output(component_id='the_graph', component_property='figure'),
-    [Input(component_id='plot_selection_dropdown', component_property='value')]
+    [Input(component_id='file_selection1_dropdown', component_property='value'),
+        Input(component_id='file_selection2_dropdown', component_property='value'),
+        Input(component_id='plot_selection_dropdown', component_property='value')]
 )
-def update_graph(plot_selection_dropdown):
+def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_selection_dropdown):
     global fig
-    df = data.copy()
-    t = df['190925_19-08244_634-17_S189_L000_R1_001_fastqc'][plot_selection_dropdown]
+
+    file1 = __data[file_selection1_dropdown][plot_selection_dropdown]
+    file2 = __data[file_selection2_dropdown][plot_selection_dropdown]
 
     if plot_selection_dropdown in table_ids:
         fig = go.Figure(data=[go.Table(
-            header=dict(values=list(t.columns),
+            header=dict(values=list(file1.columns),
                         fill_color='indigo',
                         font=dict(color='white', size=18),
                         align='left'),
-            cells=dict(values=[t.Measure, t.Value],
+            cells=dict(values=[file1.Measure, file1.Value],
                        fill_color='lavender',
                        font=dict(size=13),
                        align='left'))
         ])
 
     elif plot_selection_dropdown in boxplot_ids:
-        fig = px.box(t, x="Lower Quartile", y="Upper Quartile")
+        fig = px.box(file1, x="Lower Quartile", y="Upper Quartile")
     elif plot_selection_dropdown in tileplot_ids:
-        fig = px.line(t, x=t.iloc[:, 0], y=t.iloc[:, 1])
+        fig = px.line(file1, x=file1.iloc[:, 0], y=file1.iloc[:, 1])
     elif plot_selection_dropdown in graph_ids:
-        fig = px.line(t, x=t.iloc[:, 0], y=t.iloc[:, 1], labels=dict(x=t.columns[0], y=t.columns[1]))
+        fig = px.line(file1, x=file1.iloc[:, 0], y=file1.iloc[:, 1], labels=dict(x=file1.columns[0], y=file1.columns[1]))
         if plot_selection_dropdown == 4:
-            fig = px.line(t, x=t.iloc[:, 0], y=[t.iloc[:, 1], t.iloc[:, 2], t.iloc[:, 3], t.iloc[:, 4]],
-                          labels=dict(x=t.columns[0], y=t.columns[1]))
+            fig = px.line(file1, x=file1.iloc[:, 0], y=[file1.iloc[:, 1], file1.iloc[:, 2], file1.iloc[:, 3], file1.iloc[:, 4]],
+                          labels=dict(x=file1.columns[0], y=file1.columns[1]))
         if plot_selection_dropdown == 7:
-            print(t)
+            print(file1)
 
     #fig.update_traces(textinfo='percent+label')
     #fig.update_layout(title={'text': string, 'font': {'size': 28}, 'x': 0.5, 'xanchor': 'center'})
     return fig
 
 
-def __get_available_files():
-
-    for entry in data:
-        print(entry)
-
-    return [{'label': 'Basic Statistics', 'value': 0},
-     {'label': 'Per base sequence quality', 'value': 1, 'disabled': True},
-     {'label': 'Per tile sequence quality',
-      'value': 2, 'disabled': True},
-     {'label': 'Per sequence quality scores', 'value': 3},
-     {'label': 'Per base sequence content',
-      'value': 4},
-     {'label': 'Per sequence GC content',
-      'value': 5},
-     {'label': 'Per base N content', 'value': 6},
-     {'label': 'Sequence Length Distribution',
-      'value': 7},
-     {'label': 'Sequence Duplication Levels',
-      'value': 8, 'disabled': True},
-     {'label': 'Adapter Content', 'value': 9}]
+def __get_available_files(__data):
+    for entry in __data:
+        available_files.append({'label': entry, 'value': entry})
 
