@@ -1,16 +1,27 @@
 import visualization as v
-import io_util as io
 
-# This is a sample Python script.
+import os
+import sys
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    #fastqc_output_path = '/Users/vicky/Documents/NGSeq_Quality_Visualization/FastQC_Output/'
-    #dict_of_dfs = io.read_fastqc_data(fastqc_output_path)
-    #print(type(dict_of_dfs))
+    #t = "/Users/vicky/Documents/NGSeq_Quality_Visualization/src"
 
-    v.run_app()
+    #print('Number of arguments:', len(sys.argv), 'arguments.')
+    #print ('Argument List:', str(sys.argv))
+    '''
+    try:
+        
+    except AssertionError as error:
+        print(error)
+    else:
+        print('Executing the else clause.')
+'''
+
+    if len(sys.argv) > 1:
+        v.fastqc_output_path = str(sys.argv[1])
+        v.run_app()
+    else:
+        print("Please provide path")
+        #raise FileNotFoundError
+
+

@@ -7,7 +7,7 @@ import fastqcparser
 from pprint import pprint
 from fastqcparser import FastQCParser
 
-data_path = '/Users/vicky/Documents/RKI/trainings_data'
+#data_path = '/Users/vicky/Documents/RKI/trainings_data'
 
 fastqc_data_file = '/fastqc_data.txt'
 
@@ -26,7 +26,7 @@ def __get_extracted_subfolders(fastqc_output_path):
 
 
 def read_fastqc_data(fastqc_output_path):
-    __extract_files(fastqc_output_path)
+    #__extract_files(fastqc_output_path)
     subfolders_list = __get_extracted_subfolders(fastqc_output_path)
     for subfolder in subfolders_list:
         path = fastqc_output_path + subfolder + fastqc_data_file

@@ -12,7 +12,8 @@ import io_util as io
 
 fig = px.line()
 fastqc_output_path = '/Users/vicky/Documents/NGSeq_Quality_Visualization/FastQC_Output/'
-__data = __data = io.read_fastqc_data(fastqc_output_path)
+__data = io.read_fastqc_data(fastqc_output_path)
+
 app = dash.Dash()
 
 table_ids = [0]
@@ -94,34 +95,38 @@ app.layout = html.Div(children=[
         Input(component_id='plot_selection_dropdown', component_property='value')]
 )
 def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_selection_dropdown):
-    global fig
-
+    #global fig
     file1 = __data[file_selection1_dropdown][plot_selection_dropdown]
-    #file2 = __data[file_selection2_dropdown][plot_selection_dropdown]
+    plot_file = file1
+    if (file_selection1_dropdown != file_selection2_dropdown):
+    
+        file2 = __data[file_selection2_dropdown][plot_selection_dropdown]
+        plot_file = file2 - file1
+
 
     if plot_selection_dropdown in table_ids:
         fig = go.Figure(data=[go.Table(
-            header=dict(values=list(file1.columns),
+            header=dict(values=list(plot_file.columns),
                         fill_color='indigo',
                         font=dict(color='white', size=18),
                         align='left'),
-            cells=dict(values=[file1.Measure, file1.Value],
+            cells=dict(values=[plot_file.Measure, plot_file.Value],
                        fill_color='lavender',
                        font=dict(size=13),
                        align='left'))
         ])
 
     elif plot_selection_dropdown in boxplot_ids:
-        fig = px.box(file1, x="Lower Quartile", y="Upper Quartile")
+        fig = px.box(plot_file, x="Lower Quartile", y="Upper Quartile")
     elif plot_selection_dropdown in tileplot_ids:
-        fig = px.line(file1, x=file1.iloc[:, 0], y=file1.iloc[:, 1])
+        fig = px.line(plot_file, x=plot_file.iloc[:, 0], y=plot_file.iloc[:, 1])
     elif plot_selection_dropdown in graph_ids:
-        fig = px.line(file1, x=file1.iloc[:, 0], y=file1.iloc[:, 1], labels=dict(x=file1.columns[0], y=file1.columns[1]))
+        fig = px.line(plot_file, x=plot_file.iloc[:, 0], y=plot_file.iloc[:, 1], labels=dict(x=plot_file.columns[0], y=plot_file.columns[1]))
         if plot_selection_dropdown == 4:
-            fig = px.line(file1, x=file1.iloc[:, 0], y=[file1.iloc[:, 1], file1.iloc[:, 2], file1.iloc[:, 3], file1.iloc[:, 4]],
-                          labels=dict(x=file1.columns[0], y=file1.columns[1]))
+            fig = px.line(plot_file, x=plot_file.iloc[:, 0], y=[plot_file.iloc[:, 1], plot_file.iloc[:, 2], plot_file.iloc[:, 3], plot_file.iloc[:, 4]],
+                          labels=dict(x=plot_file.columns[0], y=plot_file.columns[1]))
         if plot_selection_dropdown == 7:
-            print(file1)
+            print(plot_file)
 
     #fig.update_traces(textinfo='percent+label')
     fig.update_layout(title={'text': plotting_options[plot_selection_dropdown]['label'], 'font': {'size': 28}, 'x': 0.5, 'xanchor': 'center'})
