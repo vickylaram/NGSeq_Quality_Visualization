@@ -15,13 +15,14 @@ if __name__ == '__main__':
         print(error)
     else:
         print('Executing the else clause.')
-'''
+
 
     if len(sys.argv) > 1:
         v.fastqc_output_path = str(sys.argv[1])
-        v.run_app()
+        os.path.abspath(os.getcwd())
+        
     else:
         print("Please provide path")
         #raise FileNotFoundError
-
-
+'''
+    v.run_app()

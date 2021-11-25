@@ -9,10 +9,7 @@ import io_util as io
 
 import io_util as io
 
-
 fig = px.line()
-fastqc_output_path = '/Users/vicky/Documents/NGSeq_Quality_Visualization/FastQC_Output/'
-__data = io.read_fastqc_data(fastqc_output_path)
 
 app = dash.Dash()
 
@@ -40,33 +37,43 @@ plotting_options = [{'label': 'Basic Statistics', 'value': 0},
                     {'label': 'Adapter Content', 'value': 9}]
 
 dropdown1 = dcc.Dropdown(id='file_selection1_dropdown',
-                                           options=available_files,
-                                           value=0,
-                                           optionHeight=60,
-                                           multi=False,
-                                           clearable=False,
-                                           searchable=True)
+                         options=available_files,
+                         value=0,
+                         optionHeight=60,
+                         multi=False,
+                         clearable=False,
+                         searchable=True)
 
 dropdown2 = dcc.Dropdown(id='file_selection2_dropdown',
-                                           options=available_files,
-                                           value=0,
-                                           optionHeight=60,
-                                           multi=False,
-                                           clearable=False,
-                                           searchable=True)
+                         options=available_files,
+                         value=0,
+                         optionHeight=60,
+                         multi=False,
+                         clearable=False,
+                         searchable=True)
 
 dropdown3 = dcc.Dropdown(id='plot_selection_dropdown',
-                                           options=plotting_options,
-                                           value=0,
-                                           optionHeight=35,
-                                           multi=False,
-                                           clearable=False)
+                         options=plotting_options,
+                         value=0,
+                         optionHeight=35,
+                         multi=False,
+                         clearable=False)
 div = html.Div(className='four columns div-user-controls',
-                          children=[])
+               children=[])
+
+
+def init():
+    fastqc_output_path = io.get_fastqc_output_path()
+    if fastqc_output_path is not None:
+        __data = io.read_fastqc_data(fastqc_output_path)
+        __get_available_files(__data)
+    else:
+        print('Non existant output directory! Please run pipeline first')
+        exit(-1)
 
 
 def run_app():
-    __get_available_files(__data)
+    init()
     app.run_server(debug=True)
 
 
@@ -80,29 +87,28 @@ app.layout = html.Div(children=[
              children=[
                  html.Div(className='four columns div-user-controls',
                           children=[dropdown1, div, dropdown2, div, dropdown3]),  # Define the left element
-    html.Div(className='eight columns div-for-charts bg-grey',
-             children=[
-                 html.Div([dcc.Graph(id='the_graph', figure=fig)])
-             ]
-             )  # Define the right element
+                 html.Div(className='eight columns div-for-charts bg-grey',
+                          children=[
+                              html.Div([dcc.Graph(id='the_graph', figure=fig)])
+                          ]
+                          )  # Define the right element
+             ])
 ])
-])
+
 
 @app.callback(
     Output(component_id='the_graph', component_property='figure'),
     [Input(component_id='file_selection1_dropdown', component_property='value'),
-        Input(component_id='file_selection2_dropdown', component_property='value'),
-        Input(component_id='plot_selection_dropdown', component_property='value')]
+     Input(component_id='file_selection2_dropdown', component_property='value'),
+     Input(component_id='plot_selection_dropdown', component_property='value')]
 )
 def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_selection_dropdown):
-    #global fig
+    # global fig
     file1 = __data[file_selection1_dropdown][plot_selection_dropdown]
     plot_file = file1
     if (file_selection1_dropdown != file_selection2_dropdown):
-    
         file2 = __data[file_selection2_dropdown][plot_selection_dropdown]
         plot_file = file2 - file1
-
 
     if plot_selection_dropdown in table_ids:
         fig = go.Figure(data=[go.Table(
@@ -121,19 +127,21 @@ def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_select
     elif plot_selection_dropdown in tileplot_ids:
         fig = px.line(plot_file, x=plot_file.iloc[:, 0], y=plot_file.iloc[:, 1])
     elif plot_selection_dropdown in graph_ids:
-        fig = px.line(plot_file, x=plot_file.iloc[:, 0], y=plot_file.iloc[:, 1], labels=dict(x=plot_file.columns[0], y=plot_file.columns[1]))
+        fig = px.line(plot_file, x=plot_file.iloc[:, 0], y=plot_file.iloc[:, 1],
+                      labels=dict(x=plot_file.columns[0], y=plot_file.columns[1]))
         if plot_selection_dropdown == 4:
-            fig = px.line(plot_file, x=plot_file.iloc[:, 0], y=[plot_file.iloc[:, 1], plot_file.iloc[:, 2], plot_file.iloc[:, 3], plot_file.iloc[:, 4]],
+            fig = px.line(plot_file, x=plot_file.iloc[:, 0],
+                          y=[plot_file.iloc[:, 1], plot_file.iloc[:, 2], plot_file.iloc[:, 3], plot_file.iloc[:, 4]],
                           labels=dict(x=plot_file.columns[0], y=plot_file.columns[1]))
         if plot_selection_dropdown == 7:
             print(plot_file)
 
-    #fig.update_traces(textinfo='percent+label')
-    fig.update_layout(title={'text': plotting_options[plot_selection_dropdown]['label'], 'font': {'size': 28}, 'x': 0.5, 'xanchor': 'center'})
+    # fig.update_traces(textinfo='percent+label')
+    fig.update_layout(title={'text': plotting_options[plot_selection_dropdown]['label'], 'font': {'size': 28}, 'x': 0.5,
+                             'xanchor': 'center'})
     return fig
 
 
 def __get_available_files(__data):
     for entry in __data:
         available_files.append({'label': entry, 'value': entry})
-
