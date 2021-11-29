@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
-params.input = "$PWD"
-params.output = "$PWD/FastQC_Output"
+params.input = "$PWD/data"
+params.output = "$PWD/FastQC_Output/"
 
 files = Channel.fromPath(params.input + "/*.fastq.gz")
 /*condaEnvYamlFile = "$PWD/environment.yaml"*/
@@ -40,5 +40,6 @@ process startDash {
    python3 $PWD/src/main.py "$params.output"
    """
 }
-result2.subscribe { println it }
-result1.subscribe { println it }
+
+/*result2.subscribe { println it }
+result1.subscribe { println it }*/

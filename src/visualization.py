@@ -7,10 +7,13 @@ import pandas as pd
 import plotly.graph_objects as go
 import io_util as io
 
-import io_util as io
+import os
+import sys
 
 fig = px.line()
-
+fastqc_output_path = ""  # io.get_fastqc_output_path()
+__data = [] #io.read_fastqc_data(fastqc_output_path)
+available_files = []
 app = dash.Dash()
 
 table_ids = [0]
@@ -18,7 +21,7 @@ boxplot_ids = [1]
 tileplot_ids = [2]
 graph_ids = [3, 4, 5, 6, 7, 9]
 
-available_files = []
+
 
 plotting_options = [{'label': 'Basic Statistics', 'value': 0},
                     {'label': 'Per base sequence quality', 'value': 1, 'disabled': True},
@@ -62,18 +65,12 @@ div = html.Div(className='four columns div-user-controls',
                children=[])
 
 
-def init():
-    fastqc_output_path = io.get_fastqc_output_path()
-    if fastqc_output_path is not None:
-        __data = io.read_fastqc_data(fastqc_output_path)
-        __get_available_files(__data)
-    else:
-        print('Non existant output directory! Please run pipeline first')
-        exit(-1)
-
-
 def run_app():
-    init()
+    #__d = io.read_fastqc_data(fastqc_output_path)
+    #__data = __d
+    #__get_available_files(__data)
+    #print(available_files)
+    #print(__data)
     app.run_server(debug=True)
 
 
