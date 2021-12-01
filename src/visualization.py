@@ -6,27 +6,26 @@ import plotly.express as px
 import pandas as pd
 import plotly.graph_objects as go
 import io_util as io
+import numpy as np
 
 import os
 import sys
 
 fig = px.line()
 fastqc_output_path = ""  # io.get_fastqc_output_path()
-__data = [] #io.read_fastqc_data(fastqc_output_path)
+__data = []  # io.read_fastqc_data(fastqc_output_path)
 available_files = []
 app = dash.Dash()
 
 table_ids = [0]
 boxplot_ids = [1]
 tileplot_ids = [2]
-graph_ids = [3, 4, 5, 6, 7, 9]
-
-
+graph_ids = [3, 4, 5, 6, 7, 8, 9]
 
 plotting_options = [{'label': 'Basic Statistics', 'value': 0},
-                    {'label': 'Per base sequence quality', 'value': 1, 'disabled': True},
+                    {'label': 'Per base sequence quality', 'value': 1},
                     {'label': 'Per tile sequence quality',
-                     'value': 2, 'disabled': True},
+                     'value': 2},
                     {'label': 'Per sequence quality scores', 'value': 3},
                     {'label': 'Per base sequence content',
                      'value': 4},
@@ -36,7 +35,7 @@ plotting_options = [{'label': 'Basic Statistics', 'value': 0},
                     {'label': 'Sequence Length Distribution',
                      'value': 7},
                     {'label': 'Sequence Duplication Levels',
-                     'value': 8, 'disabled': True},
+                     'value': 8},
                     {'label': 'Adapter Content', 'value': 9}]
 
 dropdown1 = dcc.Dropdown(id='file_selection1_dropdown',
@@ -66,11 +65,11 @@ div = html.Div(className='four columns div-user-controls',
 
 
 def run_app():
-    #__d = io.read_fastqc_data(fastqc_output_path)
-    #__data = __d
-    #__get_available_files(__data)
-    #print(available_files)
-    #print(__data)
+    # __d = io.read_fastqc_data(fastqc_output_path)
+    # __data = __d
+    # __get_available_files(__data)
+    # print(available_files)
+    # print(__data)
     app.run_server(debug=True)
 
 
@@ -121,17 +120,51 @@ def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_select
 
     elif plot_selection_dropdown in boxplot_ids:
         fig = px.box(plot_file, x="Lower Quartile", y="Upper Quartile")
+        # print(plot_file)
     elif plot_selection_dropdown in tileplot_ids:
-        fig = px.line(plot_file, x=plot_file.iloc[:, 0], y=plot_file.iloc[:, 1])
+        unique_index = plot_file['Tile'].unique()
+        unique_base = plot_file['Base'].unique()
+        unique_index_rev = np.flipud(unique_index)
+        data = []
+        for index in unique_index:
+            t = plot_file[plot_file['Tile'] == index]
+            dat = []
+
+            for base in unique_base:
+                dat.append(t[t['Base'] == base]['Mean'].values[0])
+
+            data.append(dat)
+
+        fig = go.Figure(data=go.Heatmap(z=data))
+
+        #fig = px.imshow(data, x = unique_base, y = unique_index)
+
+        #fig.update_
+
+
+        #fig.update_layout(yaxis = dict(scaleanchor = 'x'))
+
+
+        #fig.update_layout(xaxis = dict (tickmode='auto'),
+        #                  yaxis = dict (tickmode='auto'))
+#
     elif plot_selection_dropdown in graph_ids:
         fig = px.line(plot_file, x=plot_file.iloc[:, 0], y=plot_file.iloc[:, 1],
                       labels=dict(x=plot_file.columns[0], y=plot_file.columns[1]))
+        # print(plot_file)
         if plot_selection_dropdown == 4:
             fig = px.line(plot_file, x=plot_file.iloc[:, 0],
                           y=[plot_file.iloc[:, 1], plot_file.iloc[:, 2], plot_file.iloc[:, 3], plot_file.iloc[:, 4]],
                           labels=dict(x=plot_file.columns[0], y=plot_file.columns[1]))
-        if plot_selection_dropdown == 7:
-            print(plot_file)
+        if plot_selection_dropdown == 8:
+            fig = px.line(plot_file, x=plot_file.iloc[:, 0],
+                          y=[plot_file.iloc[:, 1], plot_file.iloc[:, 2]],
+                          labels=dict(x=plot_file.columns[0], y=plot_file.columns[1]))
+        if plot_selection_dropdown == 9:
+            fig = px.line(plot_file, x=plot_file.iloc[:, 0],
+                          y=[plot_file.iloc[:, 1], plot_file.iloc[:, 2], plot_file.iloc[:, 3], plot_file.iloc[:, 4],
+                             plot_file.iloc[:, 5]],
+                          labels=dict(x=plot_file.columns[0], y=plot_file.columns[1]))
 
     # fig.update_traces(textinfo='percent+label')
     fig.update_layout(title={'text': plotting_options[plot_selection_dropdown]['label'], 'font': {'size': 28}, 'x': 0.5,
