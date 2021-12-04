@@ -87,7 +87,8 @@ app.layout = html.Div(children=[
                           children=[
                               html.Div([dcc.Graph(id='the_graph', figure=fig)])
                           ]
-                          )  # Define the right element
+                          ),
+                 # Define the right element
              ])
 ])
 
@@ -119,34 +120,39 @@ def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_select
         ])
 
     elif plot_selection_dropdown in boxplot_ids:
-        fig = px.box(plot_file, x="Lower Quartile", y="Upper Quartile")
-        # print(plot_file)
+        fig = px.line(plot_file, x=plot_file.iloc[:, 0], y=plot_file.iloc[:, 1],
+                      labels=dict(x=plot_file.columns[0], y=plot_file.columns[1]))
+        fig.add_trace(go.Box(x=plot_file.iloc[0:2, 0], y=plot_file.iloc[0:2, 3:5]))
+        #fig = px.box(plot_file, x="Lower Quartile", y="Upper Quartile")
+        #print(plot_file.iloc[:, 0], plot_file.iloc[:, 3:5].to_numpy())
+        #print(plot_file.iloc[0:2, 0], plot_file.iloc[0:2, 5:7].to_numpy())
+        #print(plot_file.iloc[0:2, 3:5].to_numpy())
+
     elif plot_selection_dropdown in tileplot_ids:
         unique_index = plot_file['Tile'].unique()
         unique_base = plot_file['Base'].unique()
-        unique_index_rev = np.flipud(unique_index)
+        #unique_index_rev = np.flipud(unique_index)
         data = []
         for index in unique_index:
             t = plot_file[plot_file['Tile'] == index]
             dat = []
+            print(type(index))
 
             for base in unique_base:
+                print(type(base))
                 dat.append(t[t['Base'] == base]['Mean'].values[0])
+
 
             data.append(dat)
 
-        fig = go.Figure(data=go.Heatmap(z=data))
+        fig = go.Figure(data=go.Heatmap(z=data, x = unique_base, y = unique_index, colorscale='teal'))
 
         #fig = px.imshow(data, x = unique_base, y = unique_index)
 
-        #fig.update_
+        fig.update_layout(xaxis = dict (tickmode='linear'),
+                          yaxis = dict (tickmode='linear'))
 
-
-        #fig.update_layout(yaxis = dict(scaleanchor = 'x'))
-
-
-        #fig.update_layout(xaxis = dict (tickmode='auto'),
-        #                  yaxis = dict (tickmode='auto'))
+        fig.update_layout(yaxis = dict(scaleanchor = 'x'))
 #
     elif plot_selection_dropdown in graph_ids:
         fig = px.line(plot_file, x=plot_file.iloc[:, 0], y=plot_file.iloc[:, 1],
