@@ -122,21 +122,14 @@ def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_select
     elif plot_selection_dropdown in boxplot_ids:
         fig = px.line(plot_file, x=plot_file.iloc[:, 0], y=plot_file.iloc[:, 1],
                       labels=dict(x=plot_file.columns[0], y=plot_file.columns[1]))
-        #fig.add_trace(px.box(plot_file, x=plot_file['Base'], y=plot_file.iloc[:, 3:5].to_numpy()))
-        #fig = px.box(plot_file, x="Position in read (bp)")
-        df = plot_file.iloc[:, 3:5].transpose()
+
+        traces = []
+
+        df = plot_file.iloc[:, 2:7].transpose()
         df.columns = plot_file.iloc[:, 0]
         for col in df:
-            fig.add_trace(go.Box(y=df[col].values, name=df[col].name))
-
-        df2 = plot_file.iloc[:, 5:7].transpose()
-        df2.columns = plot_file.iloc[:, 0]
-
-        for col in df2:
-            fig.add_trace(go.Box(y=df2[col].values, name=df2[col].name))
-
-        print(df2)
-
+            fig.add_trace(go.Box(y=df[col].values, name=df[col].name, line=dict(color='black'), fillcolor='rgba(255,255,0,0.5)'))
+            #fig.add_trace(go.Box(y=df2[col].values, name=df2[col].name, line=dict(color='red')))
 
     elif plot_selection_dropdown in tileplot_ids:
         unique_index = plot_file['Tile'].unique()
@@ -146,10 +139,8 @@ def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_select
         for index in unique_index:
             t = plot_file[plot_file['Tile'] == index]
             dat = []
-            print(type(index))
 
             for base in unique_base:
-                print(type(base))
                 dat.append(t[t['Base'] == base]['Mean'].values[0])
 
 
