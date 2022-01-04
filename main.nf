@@ -8,12 +8,12 @@ files = Channel.fromPath(params.input + "/*.fastq.gz")
 
 envFile = Channel.fromPath("$PWD/environment.yaml")
 
-/*condaEnvYamlFile = "$PWD/environment.yaml"*/
+/*condaEnvYamlFile = "$PWD/environment.yaml"
 
 
 process activateEnv {
     
-}
+}*/
 
 process createOutputDir {
     script:
