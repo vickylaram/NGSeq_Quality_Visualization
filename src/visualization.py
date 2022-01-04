@@ -1,6 +1,5 @@
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 from dash.dependencies import Input, Output
 import plotly.express as px
 import pandas as pd
@@ -57,7 +56,7 @@ dropdown2 = dcc.Dropdown(id='file_selection2_dropdown',
 dropdown3 = dcc.Dropdown(id='plot_selection_dropdown',
                          options=plotting_options,
                          value=0,
-                         optionHeight=35,
+                         optionHeight=60,
                          multi=False,
                          clearable=False)
 div = html.Div(className='four columns div-user-controls',
@@ -65,11 +64,6 @@ div = html.Div(className='four columns div-user-controls',
 
 
 def run_app():
-    # __d = io.read_fastqc_data(fastqc_output_path)
-    # __data = __d
-    # __get_available_files(__data)
-    # print(available_files)
-    # print(__data)
     app.run_server(debug=True)
 
 
@@ -102,8 +96,9 @@ app.layout = html.Div(children=[
 def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_selection_dropdown):
     # global fig
     file1 = __data[file_selection1_dropdown][plot_selection_dropdown]
+
     plot_file = file1
-    if (file_selection1_dropdown != file_selection2_dropdown):
+    if file_selection1_dropdown != file_selection2_dropdown:
         file2 = __data[file_selection2_dropdown][plot_selection_dropdown]
         plot_file = file2 - file1
 
@@ -179,6 +174,12 @@ def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_select
     return fig
 
 
+def set_data(data):
+    __data = data
+
+
 def __get_available_files(__data):
     for entry in __data:
         available_files.append({'label': entry, 'value': entry})
+
+
