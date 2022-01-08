@@ -1,4 +1,5 @@
 /trainings_data
+/data
 /FastQC
 /FastQC_Output
   
@@ -12,6 +13,7 @@
 
 work/
 
+nextflow
 .nextflow/
 .nextflow.log.*
 
