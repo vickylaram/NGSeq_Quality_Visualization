@@ -9,8 +9,7 @@ import plot
 import layout
 import sys
 
-
-#Initialize needed variables
+# Initialize needed variables
 fig = go.Figure()
 fastqc_output_path = ''
 __data = []
@@ -37,7 +36,8 @@ def update_graph(file1_selection, file2_selection, plot_selection):
 
     plot_file = file1
 
-    #
+    # To be able to compare two files it has to made sure that the input doesn't get compared to itself
+    # thus resulting in 0
     if file1_selection != file2_selection:
         file2 = __data[file2_selection][plot_selection]
         plot_file = file2 - file1
@@ -73,9 +73,8 @@ if __name__ == '__main__':
         available_files = io.get_available_files(__data)
         # Assemble layout
         app.layout = layout.get(fig, available_files)
-        # Run waitress server
+        # Run waitress server since Flask's default server is not recommended for production use
         serve(app.server, host='0.0.0.0', port=8000)
-        #app.run_server(debug=True)
     else:
         print('Please provide path')
         # raise FileNotFoundError

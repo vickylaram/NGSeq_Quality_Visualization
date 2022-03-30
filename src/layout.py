@@ -3,17 +3,34 @@ import ui_constants as ui
 
 
 def __get_label(text):
+    """Convenience method to create a text label
+
+    :param text: text to be put in label
+    :return: HTML text label
+    """
     return html.P([text], style={'font-weight': 'bold', 'text-align': 'center'})
 
 
 def __get_empty_div():
+    """Convenience method for empty section
+
+    :return: empty (child-less) HTML div
+    """
     return html.Div(className='four columns div-user-controls',
                     children=[])
 
 
 def get(fig, files):
+    """Convenience method to assemble application layout
+
+    :param fig: empty Plotly GO object
+    :param files: list of available files for the file selection dropdowns
+    :return: entire, ready to use HTML layout
+    """
     default_file_value = 0
 
+    # Check if list of available files is not empty, so the first element can be extracted for
+    # the default dropdown value
     if len(files) > 0:
         default_file_value = files[0]['value']
 
@@ -49,12 +66,10 @@ def get(fig, files):
                      html.Div(className='four columns div-user-controls',
                               children=[__get_label('File 1'), dropdown1, __get_label('File 2'), dropdown2,
                                         __get_label('Plot selection'), dropdown3]),
-                     # Define the left element
                      html.Div(className='eight columns div-for-charts bg-grey',
                               children=[
                                   html.Div([dcc.Graph(id='the_graph', figure=fig)])
                               ]
                               ),
-                     # Define the right element
                  ])
     ])

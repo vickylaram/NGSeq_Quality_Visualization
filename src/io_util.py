@@ -10,6 +10,11 @@ __dictOfDfs = {}
 
 
 def __extract_files(fastqc_output_path):
+    """
+
+    :param fastqc_output_path:
+    :return:
+    """
     os.chdir(fastqc_output_path)
     for file in glob.glob('*.zip'):
         with zipfile.ZipFile(file, 'r') as zip_ref:
@@ -17,11 +22,21 @@ def __extract_files(fastqc_output_path):
 
 
 def __get_extracted_subfolders(fastqc_output_path):
+    """
+
+    :param fastqc_output_path:
+    :return:
+    """
     if fastqc_output_path is not None:
         return [d for d in os.listdir(fastqc_output_path) if os.path.isdir(os.path.join(fastqc_output_path, d))]
 
 
 def get_available_files(__data):
+    """
+
+    :param __data:
+    :return:
+    """
     available_files = []
     for entry in __data:
         available_files.append({'label': entry, 'value': entry})
@@ -29,6 +44,11 @@ def get_available_files(__data):
 
 
 def read_fastqc_data(fastqc_output_path):
+    """
+
+    :param fastqc_output_path:
+    :return:
+    """
     # __extract_files(fastqc_output_path)
     if fastqc_output_path is not None:
         subfolders_list = __get_extracted_subfolders(fastqc_output_path)
