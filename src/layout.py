@@ -1,6 +1,9 @@
 from dash import dcc, html
 import ui_constants as ui
 
+def __get_label(text):
+    return html.P([text], style={'font-weight': 'bold', "text-align": "center"})
+
 
 def get(fig, files):
     default_file_value = 0
@@ -34,31 +37,13 @@ def get(fig, files):
                              multi=False,
                              clearable=False)
     empty_div = html.Div(className='four columns div-user-controls',
-                         children=[])
-
-    div_1 = html.P(['File 1'], style={'font-weight': 'bold'})
-
-    div_2 = html.P(['File 2'], style={'font-weight': 'bold', "text-align": "center"})
-
-    div_3 = html.P(['Plot selection'], style={'font-weight': 'bold', "text-align": "center"})
-
-    div1 = html.Div(className='four columns div-user-controls',
-                    children=[empty_div, div_1], style={'marginBottom': 5, 'marginTop': 5})
-
-    div2 = html.Div(className='four columns div-user-controls',
-                    children=[empty_div, div_2], style={'marginBottom': 5, 'marginTop': 5})
-
-    div3 = html.Div(className='four columns div-user-controls',
-                    children=[empty_div, div_3], style={'marginBottom': 5, 'marginTop': 5})
+                         children=[], style={'marginBottom': 5, 'marginTop': 5})
 
     return html.Div(children=[
-
-        html.H1(id='FastQC Data Visualisation', style={'text-align': 'center'}),
-
         html.Div(className='row',  # Define the row element
                  children=[
                      html.Div(className='four columns div-user-controls',
-                              children=[div1, dropdown1, div2, dropdown2, div3, dropdown3]),
+                              children=[__get_label('File 1'), dropdown1, __get_label('File 2'), dropdown2, __get_label('Plot selection'), dropdown3]),
                      # Define the left element
                      html.Div(className='eight columns div-for-charts bg-grey',
                               children=[
