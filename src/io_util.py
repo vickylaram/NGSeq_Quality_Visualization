@@ -1,4 +1,6 @@
 import os
+
+import fastqcparser
 import pandas as pd
 from fastqcparser import FastQCParser
 
@@ -11,11 +13,11 @@ fastqc_data_file = '/fastqc_data.txt'
 __dictOfDfs = {}
 
 
-def get_available_files(data):
+def get_available_files(data: list[str]) -> dict[str, str]:
     """Function that gets all file names from parsed data
     and creates dictionary for the HTML dropdown selections
 
-    :param data: dictionary of file names as keys (values are not relevant at this point)
+    :param data: list of file names as keys (values are not relevant at this point)
     :return: dict with label (which will be presented to the user) and value (used for
     internal purpose only) - in this case they're identical
     """
@@ -25,11 +27,11 @@ def get_available_files(data):
     return available_files
 
 
-def read_fastqc_data(fastqc_output_path):
+def read_fastqc_data(fastqc_output_path: str) -> dict[str, list[pd.DataFrame]]:
     """Function that gets FastQC raw output data from directory (from it's subfolders)
 
     :param fastqc_output_path: absolute path containing FastQC reports in their subfolders
-    :return: dict in following structure: {FILE_NAME: [LIST_OF_PARSED_DATA], ...}
+    :return: dict of data of one file
     """
 
     if fastqc_output_path is not None:
@@ -41,7 +43,7 @@ def read_fastqc_data(fastqc_output_path):
         return __dictOfDfs
 
 
-def __get_extracted_subfolders(fastqc_output_path):
+def __get_extracted_subfolders(fastqc_output_path: str) -> list[str]:
     """Helper function that lists all subfolders of given directory
 
     :param fastqc_output_path: path to directory where FastQC results are written into
@@ -51,7 +53,7 @@ def __get_extracted_subfolders(fastqc_output_path):
         return [d for d in os.listdir(fastqc_output_path) if os.path.isdir(os.path.join(fastqc_output_path, d))]
 
 
-def __convert_to_dfs(raw_input_data, subfolder):
+def __convert_to_dfs(raw_input_data: fastqcparser.FastQCParser, subfolder: str):
     """Helper method that converts the parsed FastQC data
     into Pandas DataFrames for easier plotting later on.
     One file's modules/analyses are converted and added to a list,

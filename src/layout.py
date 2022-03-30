@@ -1,8 +1,9 @@
 from dash import dcc, html
+import plotly.graph_objects as go
 import ui_constants as ui
 
 
-def __get_label(text):
+def __get_label(text: str) -> html.P:
     """Convenience method to create a text label
 
     :param text: text to be put in label
@@ -11,7 +12,7 @@ def __get_label(text):
     return html.P([text], style={'font-weight': 'bold', 'text-align': 'center'})
 
 
-def __get_empty_div():
+def __get_empty_div() -> html.Div:
     """Convenience method for empty section
 
     :return: empty (child-less) HTML div
@@ -20,7 +21,7 @@ def __get_empty_div():
                     children=[])
 
 
-def get(fig, files):
+def get(fig: go.Figure, files: list[str]) -> html.Div:
     """Convenience method to assemble application layout
 
     :param fig: empty Plotly GO object
@@ -53,7 +54,7 @@ def get(fig, files):
                              searchable=True)
 
     dropdown3 = dcc.Dropdown(id='plot_selection',
-                             options=ui.plotting_options,
+                             options=ui.PLOTTING_OPTIONS,
                              placeholder='Select plot type...',
                              value=0,
                              optionHeight=60,

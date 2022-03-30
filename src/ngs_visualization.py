@@ -3,7 +3,6 @@ from waitress import serve
 from dash.dependencies import Input, Output
 import io_util as io
 import plotly.graph_objects as go
-import plotly.express as px
 import ui_constants as ui
 import plot
 import layout
@@ -23,7 +22,7 @@ app = dash.Dash()
      Input(component_id='file2_selection', component_property='value'),
      Input(component_id='plot_selection', component_property='value')]
 )
-def update_graph(file1_selection, file2_selection, plot_selection):
+def update_graph(file1_selection: str, file2_selection: str, plot_selection: int) -> go.Figure:
     """Updates graph according to user selection
 
     :param file1_selection: first file selection, taken from component of the same name (dropdown)
@@ -57,7 +56,7 @@ def update_graph(file1_selection, file2_selection, plot_selection):
 
     # Add title to plot
     fig.update_layout(
-        title={'text': ui.plotting_options[plot_selection]['label'], 'font': {'size': 28}, 'x': 0.5,
+        title={'text': ui.PLOTTING_OPTIONS[plot_selection]['label'], 'font': {'size': 28}, 'x': 0.5,
                'xanchor': 'center'})
     return fig
 

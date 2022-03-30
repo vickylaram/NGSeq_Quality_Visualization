@@ -1,8 +1,9 @@
 import plotly.express as px
 import plotly.graph_objects as go
+import pandas as pd
 
 
-def basic_statistics(data):
+def basic_statistics(data: pd.DataFrame) -> go.Figure:
     """Plots the basic statistics module as a table
 
     :param data: data from FastQC 'Basic Statistics' result module as a Pandas DataFrame
@@ -20,7 +21,7 @@ def basic_statistics(data):
     ])
 
 
-def boxplot(data):
+def boxplot(data: pd.DataFrame) -> go.Figure:
     """Plots the per base sequence quality module (Boxplot)
 
     :param data: data from FastQC 'Per base sequence quality' result module as a Pandas DataFrame
@@ -40,7 +41,7 @@ def boxplot(data):
     return fig
 
 
-def tile(data):
+def tile(data: pd.DataFrame) -> go.Figure:
     """Plots the per tile sequence quality module (tile plot/heatmap)
 
     :param data: data from FastQC 'Per tile sequence quality' result module as a Pandas DataFrame
@@ -71,7 +72,7 @@ def tile(data):
     return fig
 
 
-def line(data, selection_id):
+def line(data: pd.DataFrame, selection_id: int) -> go.Figure:
     """Plots any module that is supposed to be a line plot (see ui_constants.py),
     depending on the selection. (Some line plots are based on two columns, some
     on more.)
