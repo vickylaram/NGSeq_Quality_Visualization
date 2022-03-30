@@ -9,6 +9,8 @@ import plot
 import layout
 import sys
 
+
+#Initialize needed variables
 fig = go.Figure()
 fastqc_output_path = ''
 __data = []
@@ -23,14 +25,24 @@ app = dash.Dash()
      Input(component_id='plot_selection', component_property='value')]
 )
 def update_graph(file1_selection, file2_selection, plot_selection):
-    # global fig
+    """Updates graph according to user selection
+
+    :param file1_selection: first file selection, taken from component of the same name (dropdown)
+    :param file2_selection: second file selection
+    :param plot_selection: plot type to be created
+    :return: figure of selected input params
+    """
+
     file1 = __data[file1_selection][plot_selection]
 
     plot_file = file1
+
+    #
     if file1_selection != file2_selection:
         file2 = __data[file2_selection][plot_selection]
         plot_file = file2 - file1
 
+    # Plot according to selection, see plot.py and ui_constants.py for more information
     if plot_selection in ui.table_ids:
         fig = plot.basic_statistics(plot_file)
 
@@ -43,19 +55,27 @@ def update_graph(file1_selection, file2_selection, plot_selection):
     elif plot_selection in ui.graph_ids:
         fig = plot.line(plot_file, plot_selection)
 
+    # Add title to plot
     fig.update_layout(
         title={'text': ui.plotting_options[plot_selection]['label'], 'font': {'size': 28}, 'x': 0.5,
                'xanchor': 'center'})
     return fig
 
 
+# Application entry point
 if __name__ == '__main__':
     if len(sys.argv) > 1:
+        # Take path from programs params
         fastqc_output_path = str(sys.argv[1])
+        # Read data from provided path
         __data = io.read_fastqc_data(fastqc_output_path)
+        # Create a list of available files for UI
         available_files = io.get_available_files(__data)
+        # Assemble layout
         app.layout = layout.get(fig, available_files)
-        app.run_server(debug=True)
+        # Run waitress server
+        serve(app.server, host='0.0.0.0', port=8000)
+        #app.run_server(debug=True)
     else:
         print('Please provide path')
         # raise FileNotFoundError

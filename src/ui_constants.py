@@ -1,3 +1,4 @@
+# Plotting options for plot selection dropdown in the order they occur in the raw input
 plotting_options = [{'label': 'Basic Statistics', 'value': 0},
                     {'label': 'Per base sequence quality', 'value': 1},
                     {'label': 'Per tile sequence quality',
@@ -14,14 +15,9 @@ plotting_options = [{'label': 'Basic Statistics', 'value': 0},
                      'value': 8},
                     {'label': 'Adapter Content', 'value': 9}]
 
-
-colors = {
-    'background': '#FC0AB3',
-    'text': '#FFFFFF'
-}
-
-
+# IDs from plotting_options sorted into groups of plot types for easier processing
 table_ids = [0]
 boxplot_ids = [1]
 tileplot_id = [2]
 graph_ids = [3, 4, 5, 6, 7, 8, 9]
+
