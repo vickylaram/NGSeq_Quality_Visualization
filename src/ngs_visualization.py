@@ -5,10 +5,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 import io_util as io
 import ui_constants as ui
-import layout as l
+import layout
 import sys
 
-fig = px.line()
+fig =  go.Figure()
 fastqc_output_path = ""  # io.get_fastqc_output_path()
 __data = []  # io.read_fastqc_data(fastqc_output_path)
 __available_files = []
@@ -19,7 +19,8 @@ if __name__ == '__main__':
         fastqc_output_path = str(sys.argv[1])
         __data = io.read_fastqc_data(fastqc_output_path)
         available_files = io.get_available_files(__data)
-        app.layout = l.get_layout(fig, available_files)
+        #print(available_files)
+        app.layout = layout.get(fig, available_files)
         #serve(app.server, host='0.0.0.0', port=8000)
         app.run_server(debug=True)
     else:
@@ -35,8 +36,6 @@ if __name__ == '__main__':
 )
 def update_graph(file_selection1_dropdown, file_selection2_dropdown, plot_selection_dropdown):
     # global fig
-    print(file_selection1_dropdown, plot_selection_dropdown)
-
     file1 = __data[file_selection1_dropdown][plot_selection_dropdown]
 
     plot_file = file1
