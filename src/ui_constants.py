@@ -23,5 +23,5 @@ colors = {
 
 table_ids = [0]
 boxplot_ids = [1]
-tileplot_ids = [2]
+tileplot_id = [2]
 graph_ids = [3, 4, 5, 6, 7, 8, 9]

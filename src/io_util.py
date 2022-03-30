@@ -11,7 +11,7 @@ __dictOfDfs = {}
 
 def __extract_files(fastqc_output_path):
     os.chdir(fastqc_output_path)
-    for file in glob.glob("*.zip"):
+    for file in glob.glob('*.zip'):
         with zipfile.ZipFile(file, 'r') as zip_ref:
             zip_ref.extractall()
 
