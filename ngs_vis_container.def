@@ -4,12 +4,9 @@ From: ubuntu:18.04
 
 %post
     apt update -y && apt upgrade -y
-    
     apt install -y wget && apt install -y curl
-    wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.9.zip
-    #apt -y install default-jre
-    #java -version
-    curl -s https://get.nextflow.io | bash
+    apt install -y default-jre && apt install -y python3.10
+    #wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.9.zip
     rm -rf /home/ngs_vis_pipeline/src/assets
     rm -rf /home/ngs_vis_pipeline/src
     rm -rf /home/ngs_vis_pipeline
@@ -18,6 +15,7 @@ From: ubuntu:18.04
     mkdir /home/ngs_vis_pipeline/src/assets
     mkdir /home/ngs_vis_pipeline/FastQC_Output
     cd /home/ngs_vis_pipeline/
+    #curl -s https://get.nextflow.io | bash
     ls -la
     
     #python -V
@@ -35,7 +33,7 @@ From: ubuntu:18.04
     #./src/assets/style.css /home/ngs_vis_pipeline/src/assets
 
 %runscript
-
+     chmod +x /home/ngs_vis_pipeline/nextflow
      /home/ngs_vis_pipeline/main.nf
 
 %test
