@@ -1,0 +1,55 @@
+Bootstrap: library
+From: ubuntu:18.04
+
+
+%post
+    apt update -y && apt upgrade -y
+    
+    apt install -y wget && apt install -y curl
+    wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.9.zip
+    #apt -y install default-jre
+    #java -version
+    curl -s https://get.nextflow.io | bash
+    rm -rf /home/ngs_vis_pipeline/src/assets
+    rm -rf /home/ngs_vis_pipeline/src
+    rm -rf /home/ngs_vis_pipeline
+    mkdir /home/ngs_vis_pipeline
+    mkdir /home/ngs_vis_pipeline/src
+    mkdir /home/ngs_vis_pipeline/src/assets
+    mkdir /home/ngs_vis_pipeline/FastQC_Output
+    cd /home/ngs_vis_pipeline/
+    ls -la
+    
+    #python -V
+
+%files
+	
+    ./main.nf /home/ngs_vis_pipeline
+    ./Pipfile /home/ngs_vis_pipeline
+    ./src/assets/style.css /home/ngs_vis_pipeline
+    #./src/io_util.py /home/ngs_vis_pipeline/src
+    #./src/layout.py /home/ngs_vis_pipeline/src
+    #./src/ngs_visualization.py /home/ngs_vis_pipeline/src
+    #./src/plot.py /home/ngs_vis_pipeline/src
+    #./src/ui_constants.py /home/ngs_vis_pipeline/src
+    #./src/assets/style.css /home/ngs_vis_pipeline/src/assets
+
+%runscript
+
+     /home/ngs_vis_pipeline/main.nf
+
+%test
+    grep -q NAME=\"Ubuntu\" /etc/os-release
+    if [ $? -eq 0 ]; then
+        echo "Container base is Ubuntu as expected."
+    else
+        echo "Container base is not Ubuntu."
+    fi
+
+%labels
+    Author Vicky Mielczarek(s0558484@htw-berlin.de)
+    Version v0.0.1
+
+%help
+    This is a demo container used to illustrate a def file that uses all
+    supported sections.
