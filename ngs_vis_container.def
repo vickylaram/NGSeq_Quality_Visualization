@@ -4,7 +4,7 @@ From: ubuntu:20.04
 
 %post
     apt update -y && apt upgrade -y
-   # apt install -y wget && apt install -y curl
+    apt install -y wget && apt install -y curl
     apt install -y default-jre
     apt install -y software-properties-common
     add-apt-repository ppa:deadsnakes/ppa
@@ -26,7 +26,10 @@ From: ubuntu:20.04
     ls /bin/python*
     #python3 --version
     #pip install scipy
-    #pip3 --version
+    apt-get install -y software-properties-common
+    apt-add-repository universe
+    apt-get install -y python3-pip
+    pip3 --version
 
 %files
 	
