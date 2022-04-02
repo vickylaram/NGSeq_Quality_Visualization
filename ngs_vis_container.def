@@ -1,30 +1,38 @@
 Bootstrap: library
-From: ubuntu:18.04
+From: ubuntu:20.04
 
 
 %post
     apt update -y && apt upgrade -y
-    apt install -y wget && apt install -y curl
-    apt install -y default-jre && apt install -y python3.10
+   # apt install -y wget && apt install -y curl
+    apt install -y default-jre
+    apt install -y software-properties-common
+    add-apt-repository ppa:deadsnakes/ppa
+    apt install -y python3.9
+    #apt-get -y python3-pip
+    #apt-get install python-pip
+
     #wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.9.zip
-    rm -rf /home/ngs_vis_pipeline/src/assets
-    rm -rf /home/ngs_vis_pipeline/src
-    rm -rf /home/ngs_vis_pipeline
-    mkdir /home/ngs_vis_pipeline
-    mkdir /home/ngs_vis_pipeline/src
-    mkdir /home/ngs_vis_pipeline/src/assets
-    mkdir /home/ngs_vis_pipeline/FastQC_Output
-    cd /home/ngs_vis_pipeline/
-    #curl -s https://get.nextflow.io | bash
-    ls -la
-    
-    #python -V
+    #rm -rf /home/ngs_vis_pipeline/src/assets
+    #rm -rf /home/ngs_vis_pipeline/src
+    #rm -rf /home/ngs_vis_pipeline
+    #mkdir /home/ngs_vis_pipeline
+    #mkdir /home/ngs_vis_pipeline/src
+    #mkdir /home/ngs_vis_pipeline/src/assets
+    #mkdir /home/ngs_vis_pipeline/FastQC_Output
+    #cd /home/ngs_vis_pipeline/
+    #curl -s https://get.nextflow.io
+    #ls -la
+    ls /bin/python*
+    #python3 --version
+    #pip install scipy
+    #pip3 --version
 
 %files
 	
-    ./main.nf /home/ngs_vis_pipeline
-    ./Pipfile /home/ngs_vis_pipeline
-    ./src/assets/style.css /home/ngs_vis_pipeline
+    #./main.nf /home/ngs_vis_pipeline
+    #./Pipfile /home/ngs_vis_pipeline
+    #./src/assets/style.css /home/ngs_vis_pipeline
     #./src/io_util.py /home/ngs_vis_pipeline/src
     #./src/layout.py /home/ngs_vis_pipeline/src
     #./src/ngs_visualization.py /home/ngs_vis_pipeline/src
@@ -33,21 +41,14 @@ From: ubuntu:18.04
     #./src/assets/style.css /home/ngs_vis_pipeline/src/assets
 
 %runscript
-     chmod +x /home/ngs_vis_pipeline/nextflow
-     /home/ngs_vis_pipeline/main.nf
-
-%test
-    grep -q NAME=\"Ubuntu\" /etc/os-release
-    if [ $? -eq 0 ]; then
-        echo "Container base is Ubuntu as expected."
-    else
-        echo "Container base is not Ubuntu."
-    fi
+     export PIPENV_VENV_IN_PROJECT="enabled"
+     source tutorial-env/bin/activate
+     #chmod +x /home/ngs_vis_pipeline/nextflow
+     #/home/ngs_vis_pipeline/main.nf
 
 %labels
     Author Vicky Mielczarek(s0558484@htw-berlin.de)
     Version v0.0.1
 
 %help
-    This is a demo container used to illustrate a def file that uses all
-    supported sections.
+    This is a container to run NGS quality analyses using FastQC and visualising them interactively with Plotly Dash.
