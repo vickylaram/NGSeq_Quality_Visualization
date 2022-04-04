@@ -14,35 +14,27 @@ From: ubuntu:20.04
     apt-add-repository universe
     apt-get install -y python3-pip
     pip3 install pipenv
+    rm -rf /home/ngs_vis_pipeline
     mkdir /home/ngs_vis_pipeline
-    mkdir /home/ngs_vis_pipeline/src
-    mkdir /home/ngs_vis_pipeline/src/assets
-    mkdir /home/ngs_vis_pipeline/FastQC_Output
     cd /home/ngs_vis_pipeline/
     wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.9.zip && unzip fastqc_v0.11.9.zip
     wget -qO- https://get.nextflow.io | bash
-    ls -la
-    #chmod +x /home/ngs_vis_pipeline/nextflow
-    cd /home/ngs_vis_pipeline/FastQC
-    ls -la
-    
+    chmod +x /home/ngs_vis_pipeline/nextflow
+    export PIPENV_VENV_IN_PROJECT="enabled" && pipenv install
+    mv /home/main.nf /home/ngs_vis_pipeline
+    mv /home/Pipfile /home/ngs_vis_pipeline
+    mv /home/Pipfile.lock /home/ngs_vis_pipeline
+    mv /home/src/ /home/ngs_vis_pipeline/
+
 
 %files
-	
-    #./main.nf /home/ngs_vis_pipeline
-    #./Pipfile /home/ngs_vis_pipeline
-    #./src/assets/style.css /home/ngs_vis_pipeline
-    #./src/io_util.py /home/ngs_vis_pipeline/src
-    #./src/layout.py /home/ngs_vis_pipeline/src
-    #./src/ngs_visualization.py /home/ngs_vis_pipeline/src
-    #./src/plot.py /home/ngs_vis_pipeline/src
-    #./src/ui_constants.py /home/ngs_vis_pipeline/src
-    #./src/assets/style.css /home/ngs_vis_pipeline/src/assets
-
+    ./* /home/
+  
 %runscript
-     export PIPENV_VENV_IN_PROJECT="enabled"
-     source tutorial-env/bin/activate
-     #nextflow /home/ngs_vis_pipeline/main.nf
+     cd /home/ngs_vis_pipeline/
+     ls -la
+     pipenv shell
+     nextflow /home/ngs_vis_pipeline/main.nf
 
 %labels
     Author Vicky Mielczarek(s0558484@htw-berlin.de)

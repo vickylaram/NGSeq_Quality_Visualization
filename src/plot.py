@@ -1,6 +1,9 @@
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+import plotly.figure_factory as ff
+import numpy as np
+import math
 
 
 def basic_statistics(data: pd.DataFrame) -> go.Figure:
@@ -86,6 +89,10 @@ def line(data: pd.DataFrame, selection_id: int) -> go.Figure:
     fig = px.line(data, x=data.iloc[:, 0], y=data.iloc[:, 1],
                   labels=dict(x=data.columns[0], y=data.columns[1]))
 
+    if selection_id == 5:
+        __calculate_dist(data, fig)
+        print("Normal Distribution")
+
     # ...but certain modules have more than two columns, meaning the selection_id needs to be checked
     # ID = 4: Per base sequence content
     if selection_id == 4:
@@ -107,3 +114,74 @@ def line(data: pd.DataFrame, selection_id: int) -> go.Figure:
                       labels=dict(x=data.columns[0], y=data.columns[1]))
 
     return fig
+
+
+# Source: https://github.com/s-andrews/FastQC/blob/master/uk/ac/babraham/FastQC/Modules/PerSequenceGCContent.java
+def __calculate_dist(gc_dist, fig):
+    """Because the GC module doesn't provide the needed data for the theoretical distribution
+    I basically stole the logic and converted it into Python
+
+
+    :param data:
+    :param fig:
+    :return:
+    """
+    # gc_dist = np.empty(len(gc_dist.iloc[:, 1]))
+    theoretical_dist = np.empty(len(gc_dist.iloc[:, 1]))
+
+    max = 0
+    x_categories = np.empty(len(gc_dist.iloc[:, 1]))
+
+    total_count = 0
+
+    first_mode = 0
+    mode_count = 0
+
+    x_categories = gc_dist.iloc[:, 0].copy()
+    total_count = gc_dist.iloc[:, 1].sum()
+    max = gc_dist.iloc[:, 1].max()
+
+    mode = 0
+    mode_duplicates = 0
+
+    fell_off_top = True
+
+    temp = gc_dist.iloc[first_mode:len(gc_dist), 1]
+
+    fell_off_bottom = True
+
+    if fell_off_bottom or fell_off_top:
+        mode = first_mode
+    else:
+        mode /= mode_duplicates
+
+    std_dev = 0  # double
+
+    # mode equals mean
+    std_dev /= total_count - 1
+    std_dev = math.sqrt(std_dev)
+
+    deviation_percent = 0
+
+    stdev = np.std(std_dev)
+
+    deviation_percent = 0  # double
+
+    probabilities = __get_z_score_for_value(values, stdev, mode)
+    theoretical_dist = probabilities*total_count
+    max = theoretical_dist.max()
+
+    deviation_percent += abs(theoretical_dist-gc_dist)
+
+    deviation_percent /= total_count
+    deviation_percent *= 100
+
+    return True
+
+
+def __get_z_score_for_value(value: float, stdev: float, mean: float):
+
+    lhs = float(1) / (math.sqrt(2 * math.pi * stdev * stdev))
+    rhs = math.pow(math.e, 0 - (math.pow(value - mean, 2) / (2 * stdev * stdev)))
+
+    return lhs * rhs

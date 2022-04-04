@@ -10,7 +10,7 @@ pandas = "*"
 plotly = "*"
 dash = "*"
 fastqcparser = "*"
-
+waitress="*"
 
 [dev-packages]
 pytest = "*"

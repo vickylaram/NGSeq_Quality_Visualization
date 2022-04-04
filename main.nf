@@ -6,14 +6,6 @@ params.output = "$PWD/FastQC_Output/"
 
 files = Channel.fromPath(params.input + "/*.fastq.gz")
 
-envFile = Channel.fromPath("$PWD/environment.yaml")
-
-/*condaEnvYamlFile = "$PWD/environment.yaml"
-
-
-process activateEnv {
-    
-}*/
 
 process createOutputDir {
     script:
@@ -38,6 +30,7 @@ process runFastqc {
     script:
     """
     chmod 755 $PWD/FastQC/fastqc
+    echo "$PWD"
     $PWD/FastQC/fastqc "$file" -o $params.output --extract
     echo "Processing $file ...."
     """
@@ -52,7 +45,7 @@ process startDash {
 
    script:
    """
-   python3 $PWD/src/main.py "$params.output"
+   python3 $PWD/src/ngs_visualization.py "$params.output"
    """
 }
 
