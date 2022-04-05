@@ -5,6 +5,7 @@
 /singu
   
 *.sif
+*.zip
 
 /FastQC_Output_old
 
