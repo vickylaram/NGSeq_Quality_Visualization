@@ -1,13 +1,10 @@
 # NGSeq_Quality_Visualization
- 
- 
- 1. Install Anaconda and Nextflow if not yet installed.
- 3. Clone this repository to your desired location.
- 4. Download [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) and insert to cloned directory.
- 5. Create Conda environment with `conda env create -f environment.yaml`
- 6. Active Conda environment with `conda activate ngseq_quality_visualisation`
- 7. Run with nexflow:
- 10. nextflow run script.nf --input /Users/vicky/Documents/NGSeq_Quality_Visualization/trainings_data/Sau/good/MS
 
 
-
+ 1. Make sure you have Java and Python installed.
+ 2. Clone this repository to your desired location.
+ 3. Make scripts executable with ```chmod +x ./setup.sh && chmod +x ./run.sh```
+ 4. Run ```setup.sh``` first to download all needed tools and setup directory
+ structures. You only need to run it once.
+ 5. Afterwards, run ```run.sh``` for the actual pipeline. You need to provide ```--input``` for the raw fastq.gz data.
+ 6. Find the analyses of your data at ```127.0.0.1:8000``` or ```localhost:8000```
