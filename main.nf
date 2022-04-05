@@ -6,21 +6,6 @@ params.output = "$PWD/FastQC_Output/"
 
 files = Channel.fromPath(params.input + "/*.fastq.gz")
 
-/*
-process createOutputDir {
-    script:
-    """
-    if [ -d "$params.input" ]; then
-    [[ -d "$params.output" ]] || mkdir "$params.output"
-    echo "SUCCESS: '$params.input' created."
-    else
-    echo "Warning: '$params.input' NOT found."
-    fi
-    """
-}
-*/
-
-
 process runFastqc {
 
     input:
@@ -38,7 +23,6 @@ process runFastqc {
 
 }
 
-/*
 process startDash {
 
    output:
@@ -49,7 +33,4 @@ process startDash {
    python3 $PWD/src/ngs_visualization.py "$params.output"
    """
 }
-*/
 
-
-//result1.subscribe { println params.input }
