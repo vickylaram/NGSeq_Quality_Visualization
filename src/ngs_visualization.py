@@ -3,6 +3,8 @@ from waitress import serve
 from dash.dependencies import Input, Output
 import io_util as io
 import plotly.graph_objects as go
+
+import ui_constants
 import ui_constants as ui
 import plot
 import layout
@@ -31,19 +33,29 @@ def update_graph(file1_selection: str, file2_selection: str, plot_selection: int
     :return: figure of selected input params
     """
 
-    file1 = __data[file1_selection][plot_selection]
+    graph_ids = ui.graph_ids_without_overrep
+    table_ids = ui.table_ids_without_overrep
+
+    file1 = __data[file1_selection][plot_selection][1]
+
+    if len(__data[file1_selection]) == 10 and plot_selection <= 9:
+        file1 = __data[file1_selection][plot_selection][1]
+
+    if len(__data[file1_selection]) == 11:
+        graph_ids = ui.graph_ids_with_overrep
+        table_ids = ui.table_ids_with_overrep
 
     plot_file = file1
 
     # To be able to compare two files it has to made sure that the input doesn't get compared to itself
     # thus resulting in 0
     if file1_selection != file2_selection:
-        file2 = __data[file2_selection][plot_selection]
+        file2 = __data[file2_selection][plot_selection][1]
         plot_file = file2 - file1
 
     # Plot according to selection, see plot.py and ui_constants.py for more information
-    if plot_selection in ui.table_ids:
-        fig = plot.basic_statistics(plot_file)
+    if plot_selection in table_ids:
+        fig = plot.table(plot_file, plot_selection)
 
     elif plot_selection in ui.boxplot_ids:
         fig = plot.boxplot(plot_file)
@@ -51,14 +63,19 @@ def update_graph(file1_selection: str, file2_selection: str, plot_selection: int
     elif plot_selection in ui.tileplot_id:
         fig = plot.tile(plot_file)
 
-    elif plot_selection in ui.graph_ids:
+    elif plot_selection in graph_ids:
         fig = plot.line(plot_file, plot_selection)
 
     # Add title to plot
     fig.update_layout(
-        title={'text': ui.PLOTTING_OPTIONS[plot_selection]['label'], 'font': {'size': 28}, 'x': 0.5,
+        title={'text': ui.PLOTTING_OPTIONS[plot_selection]['label'] + " " + __get_status_string(
+            __data[file1_selection][1][0]), 'font': {'size': 28}, 'x': 0.5,
                'xanchor': 'center'})
     return fig
+
+
+def __get_status_string(status):
+    return "Pass"
 
 
 # Application entry point

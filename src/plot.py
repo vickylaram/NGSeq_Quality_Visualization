@@ -1,27 +1,40 @@
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-import plotly.figure_factory as ff
-import numpy as np
-import math
 
 
-def basic_statistics(data: pd.DataFrame) -> go.Figure:
-    """Plots the basic statistics module as a table
+def table(data: pd.DataFrame, selection_id: int) -> go.Figure:
+    """Plots the basic statistics or overrepresented sequences module as a table
 
     :param data: data from FastQC 'Basic Statistics' result module as a Pandas DataFrame
+    :param selection_id: exact id of selection for correct plotting
     :return: Plotly Graph Objects/Table figure filled with data provided in params
     """
-    return go.Figure(data=[go.Table(
-        header=dict(values=list(data.columns),
-                    fill_color='indigo',
-                    font=dict(color='white', size=18),
-                    align='left'),
-        cells=dict(values=[data.Measure, data.Value],
-                   fill_color='lavender',
-                   font=dict(size=13),
-                   align='left'))
-    ])
+
+    if selection_id == 0:
+        return go.Figure(data=[go.Table(
+            header=dict(values=list(data.columns),
+                        fill_color='indigo',
+                        font=dict(color='white', size=18),
+                        align='left'),
+            cells=dict(values=[data.Measure, data.Value],
+                       fill_color='lavender',
+                       font=dict(size=13),
+                       align='left'))
+        ])
+
+    if selection_id == 9:
+        print(data.columns)
+        return go.Figure(data=[go.Table(
+            header=dict(values=list(data.columns),
+                        fill_color='indigo',
+                        font=dict(color='white', size=18),
+                        align='left'),
+            cells=dict(values=[data.Sequence, data.Count, data.Percentage, data['Possible Source']],
+                       fill_color='lavender',
+                       font=dict(size=13),
+                       align='left'))
+        ])
 
 
 def boxplot(data: pd.DataFrame) -> go.Figure:
@@ -89,9 +102,9 @@ def line(data: pd.DataFrame, selection_id: int) -> go.Figure:
     fig = px.line(data, x=data.iloc[:, 0], y=data.iloc[:, 1],
                   labels=dict(x=data.columns[0], y=data.columns[1]))
 
-    if selection_id == 5:
-        __calculate_dist(data, fig)
-        print("Normal Distribution")
+    # if selection_id == 5:
+    # __calculate_dist(data, fig)
+    # print("Normal Distribution")
 
     # ...but certain modules have more than two columns, meaning the selection_id needs to be checked
     # ID = 4: Per base sequence content
@@ -106,8 +119,10 @@ def line(data: pd.DataFrame, selection_id: int) -> go.Figure:
                       y=[data.iloc[:, 1], data.iloc[:, 2]],
                       labels=dict(x=data.columns[0], y=data.columns[1]))
 
-    # ID = 9: Adapter Content
-    if selection_id == 9:
+    # ID = 9: Overrepresented sequences
+
+    # ID = 9/10: Adapter Content
+    if selection_id == 9 or selection_id == 10:
         fig = px.line(data, x=data.iloc[:, 0],
                       y=[data.iloc[:, 1], data.iloc[:, 2], data.iloc[:, 3], data.iloc[:, 4],
                          data.iloc[:, 5]],
@@ -116,16 +131,17 @@ def line(data: pd.DataFrame, selection_id: int) -> go.Figure:
     return fig
 
 
+"""
 # Source: https://github.com/s-andrews/FastQC/blob/master/uk/ac/babraham/FastQC/Modules/PerSequenceGCContent.java
 def __calculate_dist(gc_dist, fig):
-    """Because the GC module doesn't provide the needed data for the theoretical distribution
+    Because the GC module doesn't provide the needed data for the theoretical distribution
     I basically stole the logic and converted it into Python
 
 
     :param data:
     :param fig:
     :return:
-    """
+    
     # gc_dist = np.empty(len(gc_dist.iloc[:, 1]))
     theoretical_dist = np.empty(len(gc_dist.iloc[:, 1]))
 
@@ -185,3 +201,4 @@ def __get_z_score_for_value(value: float, stdev: float, mean: float):
     rhs = math.pow(math.e, 0 - (math.pow(value - mean, 2) / (2 * stdev * stdev)))
 
     return lhs * rhs
+"""
