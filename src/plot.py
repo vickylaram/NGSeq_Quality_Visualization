@@ -108,43 +108,42 @@ def line(data: pd.DataFrame, selection_id: int) -> go.Figure:
 
     # Assumption: data from params usually only have two columns present (x,y)...
 
-    fig = px.line(data, x=[], y=[])
+    fig = px.line(data, x=data.iloc[:, 0], y=[])
 
-    x_data = []
     y_data = []
 
     if selection_id == 3:
-        x_data = data['Quality']
         y_data = data['Count']
         fig.update_layout(
-            xaxis_title="Mean Sequence Quality (Phred Score)"
+            xaxis_title="Mean Sequence Quality (Phred Score)",
+            yaxis_title=""
         )
 
     if selection_id == 5:
-        x_data = data['GC Content']
         y_data = data['Count']
 
         fig.update_layout(
-            xaxis_title="Mean GC content (%)"
+            xaxis_title="Mean GC content (%)",
+            yaxis_title=""
         )
         # __calculate_dist(data, fig)
 
     if selection_id == 6:
-        x_data = data['Base']
-        y_data = data['N - Count']
+        y_data = data['N-Count']
 
         fig.update_layout(
-            xaxis_title="Position in read (bp)"
+            xaxis_title="Position in read (bp)",
+            yaxis_title=""
         )
 
     if selection_id == 7:
-        x_data = data['Length']
         y_data = data['Count']
 
         fig.update_layout(
-            xaxis_title="Sequence Length (bp)"
+            xaxis_title="Sequence Length (bp)",
+            yaxis_title=""
         )
-    fig = px.line(data, x=x_data, y=y_data)
+    fig = px.line(data, x=data.iloc[:, 0], y=y_data)
 
     # ...but certain modules have more than two columns, meaning the selection_id needs to be checked
     # ID = 4: Per base sequence content
@@ -154,29 +153,31 @@ def line(data: pd.DataFrame, selection_id: int) -> go.Figure:
                       y=[data['G'], data['A'], data['T'], data['C']],
                       )
         fig.update_layout(
-            xaxis_title="Position in read (bp)"
+            xaxis_title="Position in read (bp)",
+            yaxis_title=""
         )
 
     # ID = 8: Sequence Duplication Levels
     if selection_id == 8:
         # - 37.25 %
-        fig = px.line(data, x=data['Duplication Level'],
-                      y=[data['Percentage of deduplicated'], data['Percentage of total']],
-                      labels=dict(x=data.columns[0], y=data.columns[1]))
+        fig = px.line(data, x=data.iloc[:, 0],
+                      y=[data['Percentage of deduplicated'], data['Percentage of total']])
         fig.update_layout(
-            xaxis_title="Sequence Duplication level"
+            xaxis_title="Sequence Duplication level",
+            yaxis_title=""
         )
 
     # ID = 9: Adapter Content
     if selection_id == 9:
-        fig = px.line(data, x=data['Position'],
+        fig = px.line(data, x=data.iloc[:, 0],
                       y=[data['Illumina Universal Adapter'], data['Illumina Small RNA 3\' Adapter'],
                          data['Illumina Small RNA 5\' Adapter'], data['Nextera Transposase Sequence'],
                          data['SOLID Small RNA Adapter']],
                       )
-    fig.update_layout(
-        xaxis_title="Position in read (bp)"
-    )
+        fig.update_layout(
+            xaxis_title="Position in read (bp)",
+            yaxis_title="Position"
+        )
 
     return fig
 
