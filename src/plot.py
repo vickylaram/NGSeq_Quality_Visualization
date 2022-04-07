@@ -24,7 +24,6 @@ def table(data: pd.DataFrame, selection_id: int) -> go.Figure:
         ])
 
     if selection_id == 10:
-        print(data.columns)
         return go.Figure(data=[go.Table(
             header=dict(values=list(data.columns),
                         fill_color='indigo',
@@ -168,7 +167,7 @@ def line(data: pd.DataFrame, selection_id: int) -> go.Figure:
         )
 
     # ID = 9: Adapter Content
-    if selection_id == 9:
+    if selection_id == 9 or selection_id == 10:
         fig = px.line(data, x=data.iloc[:, 0],
                       y=[data['Illumina Universal Adapter'], data['Illumina Small RNA 3\' Adapter'],
                          data['Illumina Small RNA 5\' Adapter'], data['Nextera Transposase Sequence'],

@@ -36,6 +36,8 @@ def update_graph(file1_selection: str, file2_selection: str, plot_selection: int
     # Handle the case if Overrepresented Sequences are present
     table_ids = ui.table_ids_without_overrep
 
+    selection_id = plot_selection
+
     if len(__data[file1_selection]) == 10 and plot_selection == 10:
         plot_selection = plot_selection - 1
 
@@ -43,20 +45,21 @@ def update_graph(file1_selection: str, file2_selection: str, plot_selection: int
         table_ids = ui.table_ids_with_overrep
 
         if plot_selection == 9:
-            plot_selection = plot_selection + 1
+            selection_id = plot_selection + 1
 
         if plot_selection == 10:
-            plot_selection = plot_selection - 1
+            selection_id = plot_selection - 1
 
-    file1 = __data[file1_selection][plot_selection][1]
+
+    file1 = __data[file1_selection][selection_id][1]
 
     plot_file = file1
 
     # To be able to compare two files it has to made sure that the input doesn't get compared to itself
     # thus resulting in 0
-    if file1_selection != file2_selection and plot_selection in ui.graph_ids:
-        file2 = __data[file2_selection][plot_selection][1]
-        plot_file = file2 - file1
+    # if file1_selection != file2_selection and plot_selection in ui.graph_ids:
+    #    file2 = __data[file2_selection][plot_selection][1]
+    #    plot_file = file2 - file1
 
     # Plot according to selection, see plot.py and ui_constants.py for more information
     if plot_selection in table_ids:
@@ -116,6 +119,7 @@ def __get_plot_subtitle(plot_selection: int) -> str:
     if plot_selection == 9:
         return part1 + ui.subtitle_9 + part2
     return ''
+
 
 # Application entry point
 if __name__ == '__main__':
