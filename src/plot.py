@@ -6,7 +6,7 @@ import pandas as pd
 def table(data: pd.DataFrame, selection_id: int) -> go.Figure:
     """Plots the basic statistics or overrepresented sequences module as a table
 
-    :param data: data from FastQC 'Basic Statistics' result module as a Pandas DataFrame
+    :param data: data from FastQC 'Basic Statistics' or 'Overrepresented sequences' result module as a Pandas DataFrame
     :param selection_id: exact id of selection for correct plotting
     :return: Plotly Graph Objects/Table figure filled with data provided in params
     """
@@ -23,7 +23,7 @@ def table(data: pd.DataFrame, selection_id: int) -> go.Figure:
                        align='left'))
         ])
 
-    if selection_id == 9:
+    if selection_id == 10:
         print(data.columns)
         return go.Figure(data=[go.Table(
             header=dict(values=list(data.columns),
@@ -53,6 +53,11 @@ def boxplot(data: pd.DataFrame) -> go.Figure:
         fig.add_trace(
             go.Box(y=df[col].values, name=df[col].name, line=dict(color='black'), fillcolor='rgba(255,255,0,0.5)'))
         # fig.add_trace(go.Box(y=df2[col].values, name=df2[col].name, line=dict(color='red')))
+    fig.update_layout(
+        xaxis_title="Position in read (bp)"
+    )
+
+    # Quality scored across all bases /Sanger /Illumina 1.9 encoding
 
     return fig
 
@@ -85,6 +90,9 @@ def tile(data: pd.DataFrame) -> go.Figure:
 
     fig.update_layout(yaxis=dict(scaleanchor='x'))
 
+    fig.update_layout(
+        xaxis_title="Position in read (bp)"
+    )
     return fig
 
 
@@ -102,31 +110,73 @@ def line(data: pd.DataFrame, selection_id: int) -> go.Figure:
     fig = px.line(data, x=data.iloc[:, 0], y=data.iloc[:, 1],
                   labels=dict(x=data.columns[0], y=data.columns[1]))
 
-    # if selection_id == 5:
-    # __calculate_dist(data, fig)
-    # print("Normal Distribution")
+    if selection_id == 6:
+        #
+        fig.update_layout(
+            xaxis_title="Position in read (bp)"
+        )
+
+    # Average quality per read
+    if selection_id == 3:
+        fig.update_layout(
+            xaxis_title="Mean Sequence Quality (Phred Score)"
+        )
+
+    if selection_id == 5:
+        #
+        # Label. GC count per read
+        fig.update_layout(
+            xaxis_title="Mean GC content (%)"
+        )
+
+        # __calculate_dist(data, fig)
+        # print("Normal Distribution")
 
     # ...but certain modules have more than two columns, meaning the selection_id needs to be checked
     # ID = 4: Per base sequence content
     if selection_id == 4:
+        # Sequence content across all bases
         fig = px.line(data, x=data.iloc[:, 0],
                       y=[data.iloc[:, 1], data.iloc[:, 2], data.iloc[:, 3], data.iloc[:, 4]],
-                      labels=dict(x=data.columns[0], y=data.columns[1]))
+                      labels={
+                          "G": "%G",
+                          "A": "%A",
+                          "T": "%T",
+                          "C": "%C"
+                      }
+                      )
+        fig.update_layout(
+            xaxis_title="Position in read (bp)"
+        )
+
+    if selection_id == 7:
+        #
+        #Sequence length
+        fig.update_layout(
+            xaxis_title="Sequence Length (bp)"
+        )
 
     # ID = 8: Sequence Duplication Levels
     if selection_id == 8:
+        # - 37.25 %
+        #Deduplicated sequences - Total sequences
         fig = px.line(data, x=data.iloc[:, 0],
                       y=[data.iloc[:, 1], data.iloc[:, 2]],
                       labels=dict(x=data.columns[0], y=data.columns[1]))
+        fig.update_layout(
+            xaxis_title="Sequence Duplication level"
+        )
 
-    # ID = 9: Overrepresented sequences
-
-    # ID = 9/10: Adapter Content
-    if selection_id == 9 or selection_id == 10:
+    # ID = 9: Adapter Content
+    if selection_id == 9:
         fig = px.line(data, x=data.iloc[:, 0],
                       y=[data.iloc[:, 1], data.iloc[:, 2], data.iloc[:, 3], data.iloc[:, 4],
                          data.iloc[:, 5]],
                       labels=dict(x=data.columns[0], y=data.columns[1]))
+    fig.update_layout(
+        xaxis_title="Position in read (bp)"
+    )
+    #Labels: die geräte
 
     return fig
 

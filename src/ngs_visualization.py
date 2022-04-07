@@ -33,23 +33,28 @@ def update_graph(file1_selection: str, file2_selection: str, plot_selection: int
     :return: figure of selected input params
     """
 
-    graph_ids = ui.graph_ids_without_overrep
+    # Handle the case if Overrepresented Sequences are present
     table_ids = ui.table_ids_without_overrep
 
-    file1 = __data[file1_selection][plot_selection][1]
-
-    if len(__data[file1_selection]) == 10 and plot_selection <= 9:
-        file1 = __data[file1_selection][plot_selection][1]
+    if len(__data[file1_selection]) == 10 and plot_selection == 10:
+        plot_selection = plot_selection - 1
 
     if len(__data[file1_selection]) == 11:
-        graph_ids = ui.graph_ids_with_overrep
         table_ids = ui.table_ids_with_overrep
+
+        if plot_selection == 9:
+            plot_selection = plot_selection + 1
+
+        if plot_selection == 10:
+            plot_selection = plot_selection - 1
+
+    file1 = __data[file1_selection][plot_selection][1]
 
     plot_file = file1
 
     # To be able to compare two files it has to made sure that the input doesn't get compared to itself
     # thus resulting in 0
-    if file1_selection != file2_selection:
+    if file1_selection != file2_selection and plot_selection in ui.graph_ids:
         file2 = __data[file2_selection][plot_selection][1]
         plot_file = file2 - file1
 
@@ -63,20 +68,54 @@ def update_graph(file1_selection: str, file2_selection: str, plot_selection: int
     elif plot_selection in ui.tileplot_id:
         fig = plot.tile(plot_file)
 
-    elif plot_selection in graph_ids:
+    elif plot_selection in ui.graph_ids:
         fig = plot.line(plot_file, plot_selection)
 
     # Add title to plot
     fig.update_layout(
-        title={'text': ui.PLOTTING_OPTIONS[plot_selection]['label'] + " " + __get_status_string(
-            __data[file1_selection][1][0]), 'font': {'size': 28}, 'x': 0.5,
+        title={'text': ui.PLOTTING_OPTIONS[plot_selection]['label'] + " - " + __get_status_string(
+            __data[file1_selection][plot_selection][0]) + __get_plot_subtitle(plot_selection), 'font': {'size': 28},
+               'x': 0.5,
                'xanchor': 'center'})
     return fig
 
 
-def __get_status_string(status):
-    return "Pass"
+def __get_status_string(status: str) -> str:
+    """Function to convert FastQC module status into more userfriendly string
 
+    :param status: raw status string
+    :return: prettyfied status string
+    """
+    if status == 'pass':
+        return 'Pass ✓'
+    if status == 'warn':
+        return 'Warn !'
+    return "Fail ❌"
+
+
+def __get_plot_subtitle(plot_selection: int) -> str:
+    """Helper function to add subtitles to plots
+
+    :param plot_selection: integer of selected plot
+    :return: string of subtitle
+    """
+    part1 = '<br><sup>'
+    part2 = '</sup>'
+    if plot_selection == 3:
+        return part1 + ui.subtitle_3 + part2
+    if plot_selection == 4:
+        return part1 + ui.subtitle_4 + part2
+    if plot_selection == 5:
+        return part1 + ui.subtitle_5 + part2
+    if plot_selection == 6:
+        return part1 + ui.subtitle_6 + part2
+    if plot_selection == 7:
+        return part1 + ui.subtitle_7 + part2
+    if plot_selection == 8:
+        return part1 + ui.subtitle_8 + part2
+    if plot_selection == 9:
+        return part1 + ui.subtitle_9 + part2
+    return ''
 
 # Application entry point
 if __name__ == '__main__':

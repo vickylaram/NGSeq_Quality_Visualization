@@ -13,17 +13,23 @@ PLOTTING_OPTIONS = [{'label': 'Basic Statistics', 'value': 0},
                      'value': 7},
                     {'label': 'Sequence Duplication Levels',
                      'value': 8},
-                    {'label': 'Overrepresented sequences', 'value': 9},
-                    {'label': 'Adapter Content', 'value': 10}]
+                    {'label': 'Adapter Content', 'value': 9},
+                    {'label': 'Overrepresented sequences', 'value': 10}]
 
 
 # IDs from plotting_options sorted into groups of plot types for easier processing
 table_ids_without_overrep = [0]
-table_ids_with_overrep = [0, 9]
+table_ids_with_overrep = [0, 10]
 boxplot_ids = [1]
 tileplot_id = [2]
-graph_ids_without_overrep = [3, 4, 5, 6, 7, 8, 9]
-graph_ids_with_overrep = [3, 4, 5, 6, 7, 8, 10]
+graph_ids = [3, 4, 5, 6, 7, 8, 9]
 
 
+subtitle_3 = 'Quality score distribution over all sequences'
+subtitle_4 = 'Sequence content across all bases'
+subtitle_5 = 'GC distribution over all sequences'
+subtitle_6 = 'N content across all bases'
+subtitle_7 = 'Distribution of sequence lengths over all sequences'
+subtitle_8 = 'Percent of seqs remaining if deduplicated'
+subtitle_9 = '% Adapter'
 
