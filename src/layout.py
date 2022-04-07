@@ -21,7 +21,7 @@ def __get_empty_div() -> html.Div:
                     children=[])
 
 
-def get(fig: go.Figure, files: list[str]) -> html.Div:
+def get(fig: go.Figure, files: list[dict[str, str]]) -> html.Div:
     """Convenience method to assemble application layout
 
     :param fig: empty Plotly GO object

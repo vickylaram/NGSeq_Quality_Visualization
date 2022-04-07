@@ -13,7 +13,7 @@ fastqc_data_file = '/fastqc_data.txt'
 __dictOfDfs = {}
 
 
-def get_available_files(data: list[str]) -> dict[str, str]:
+def get_available_files(data: dict[str, tuple[str, pd.DataFrame]]) -> list[dict[str, str]]:
     """Function that gets all file names from parsed data
     and creates dictionary for the HTML dropdown selections
 
@@ -27,7 +27,7 @@ def get_available_files(data: list[str]) -> dict[str, str]:
     return available_files
 
 
-def read_fastqc_data(fastqc_output_path: str) -> dict[str, list[pd.DataFrame]]:
+def read_fastqc_data(fastqc_output_path: str) -> dict[str, tuple[str, pd.DataFrame]]:
     """Function that gets FastQC raw output data from directory (from it's subfolders)
 
     :param fastqc_output_path: absolute path containing FastQC reports in their subfolders
@@ -62,8 +62,8 @@ def __convert_to_dfs(raw_input_data: fastqcparser.FastQCParser, subfolder: str):
     :param raw_input_data: raw, already Fastqcparser-processed data of one file/subfolder
     :param subfolder: name of file/subfolder being processed, later used as key in dict
     """
-    __listOfDfs = []
+    __tupleOfDfs = []
     for module in raw_input_data.modules.keys():
         module_df = pd.DataFrame(raw_input_data.modules[module]['data'], columns=raw_input_data[module]['fieldnames'])
-        __listOfDfs.append(module_df)
-    __dictOfDfs[subfolder] = __listOfDfs
+        __tupleOfDfs.append((raw_input_data.modules[module]['status'], module_df))
+    __dictOfDfs[subfolder] = __tupleOfDfs
